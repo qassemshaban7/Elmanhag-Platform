@@ -1,0 +1,345 @@
+﻿@using ElmanhagPlatform.ViewModels.ExamVM;
+@model AddExamVM
+
+@{
+    ViewData["Title"] = "تعديل الامتحان";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var questions = Model.Questions ?? new List<QuestionVM>();
+}
+
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <style>
+        .hire-info {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            height: auto;
+            padding: 20px;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        .container {
+            width: 100%;
+            margin: 0 auto;
+            padding: 0;
+        }
+
+        .hire-info form {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .form-container {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .form-group {
+            width: 100%;
+        }
+
+        .question-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
+            width: 100%;
+            border: 2px solid #007bff;
+            border-radius: 10px;
+            padding: 20px;
+            position: relative;
+        }
+
+        .question-number {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background-color: #007bff;
+            color: white;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+        }
+
+        .answer-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5%;
+            justify-content: space-between;
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        .answer-group .form-group {
+            flex: 0 0 48%;
+            margin-bottom: 10px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 1.2em;
+        }
+
+        .remove-question {
+            background-color: #dc3545;
+            color: white;
+            margin-top: 10px;
+            align-self: flex-end;
+        }
+
+        media (max-width: 768px) {
+            .form-container {
+                flex-direction: column;
+            }
+
+            .answer-group {
+                flex-direction: column;
+            }
+
+            .answer-group .form-group {
+                flex: 1 1 100%;
+            }
+        }
+
+        media (min-width: 992px) {
+            .question-group > .form-group:first-child input {
+                font-size: 1.4em;
+                font-weight: bold;
+            }
+
+            .question-group {
+                width: 100%;
+            }
+
+            .answer-group .form-group {
+                flex: 0 0 48%;
+            }
+        }
+
+        .hea {
+            margin-top: 50px;
+            text-align: center;
+        }
+
+        .btn-h {
+            /* background-color: #ff9933; */
+            color: #333;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .btn-h:hover {
+            /* background-color: #ff9933; */
+        }
+
+        h1 {
+            /* color: #ff9933; */
+            text-align: center;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="contact" class="hire">
+        <div class="container">
+            <div class="hire-details">
+                <h1 class="text-primary">تعديل الامتحان للمحاضرة @ViewBag.Lectures.Name</h1>
+                <div class="hire-info">
+                    <form asp-action="Edit" asp-controller="Exam" method="post">
+                        <input type="hidden" asp-for="Id" />
+                        
+                        <div class="form-container">
+                            <div class="form-group">
+                                <label>اسم الامتحان<span class="tx-danger"></span></label>
+                                <input asp-for="Name" autocomplete="on" aria-required="true" required type="text" class="form-control" placeholder="اسم الامتحان">
+                                <span asp-validation-for="Name" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label>مدة الامتحان بالدقيقة<span class="tx-danger"></span></label>
+                                <input asp-for="Duration" autocomplete="off" aria-required="true" required type="text" class="form-control" placeholder="مدة الامتحان">
+                                <span asp-validation-for="Duration" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label>وصف الامتحان<span class="tx-danger"></span></label>
+                                <textarea asp-for="Description" autocomplete="on" aria-required="true" required class="form-control" placeholder="وصف الامتحان"></textarea>
+                                <span asp-validation-for="Description" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <h3>الأسئلة</h3>
+                        <div id="questions-container">
+                            @if (Model.Questions != null && Model.Questions.Count > 0)
+                            {
+                                for (int i = 0; i < Model.Questions.Count; i++)
+                                {
+                                    <div class="form-container question-group">
+                                        <span class="question-number">@(@i + 1)</span>
+                                        <div class="form-group">
+                                            <label>نص السؤال</label>
+                                            <textarea asp-for="Questions[i].Content" class="form-control" placeholder="نص السؤال"></textarea>
+                                            <span asp-validation-for="Questions[i].Content" class="text-danger"></span>
+                                        </div>
+                                        <div class="answer-group">
+                                            <div class="form-group">
+                                                <label>الإجابة الأولى</label>
+                                                <input asp-for="Questions[i].FirstAnswer" class="form-control" placeholder="الإجابة الأولى" />
+                                                <span asp-validation-for="Questions[i].FirstAnswer" class="text-danger"></span>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>الإجابة الثانية</label>
+                                                <input asp-for="Questions[i].SecondAnswer" class="form-control" placeholder="الإجابة الثانية" />
+                                                <span asp-validation-for="Questions[i].SecondAnswer" class="text-danger"></span>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>الإجابة الثالثة</label>
+                                                <input asp-for="Questions[i].ThirdAnswer" class="form-control" placeholder="الإجابة الثالثة" />
+                                                <span asp-validation-for="Questions[i].ThirdAnswer" class="text-danger"></span>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>الإجابة الرابعة</label>
+                                                <input asp-for="Questions[i].ForthAnswer" class="form-control" placeholder="الإجابة الرابعة" />
+                                                <span asp-validation-for="Questions[i].ForthAnswer" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>الإجابة الصحيحة</label>
+                                            <select asp-for="Questions[i].CorrectAnswer" class="form-control">
+                                                <option value="">اختر الإجابة الصحيحة</option>
+                                                <option value="FirstAnswer">الإجابة الأولى</option>
+                                                <option value="SecondAnswer">الإجابة الثانية</option>
+                                                <option value="ThirdAnswer">الإجابة الثالثة</option>
+                                                <option value="ForthAnswer">الإجابة الرابعة</option>
+                                            </select>
+                                            <span asp-validation-for="Questions[i].CorrectAnswer" class="text-danger"></span>
+                                        </div>
+                                        <button type="button" class="btn btn-danger remove-question">حذف</button>
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <p>لم يتم إضافة أسئلة بعد.</p>
+                            }
+                        </div>
+
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
+                        <button type="button" id="add-question" class="btn btn-primary"> <i class="fas fa-plus"></i> إضافة سؤال</button>
+
+                        <div class="form-layout-footer mg-t-30 text-center">
+                            <button type="submit" class="btn-1 btn-h btn btn-primary">
+                                <i class="fas fa-save"></i> حفظ
+                            </button>
+                            <a asp-controller="Exam" asp-action="Index" asp-route-id="@ViewBag.Lectures.Id" class="btn-1 btn-h btn btn-primary">
+                                <i class="fas fa-arrow-left"></i> رجوع
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+    $(document).ready(function () {
+        var questionIndex = @questions.Count;
+
+        $('#add-question').click(function () {
+            var questionHtml = `
+                <div class="form-container question-group">
+                    <span class="question-number">${questionIndex + 1}</span>
+                    <div class="form-group">
+                        <label>نص السؤال</label>
+                        <textarea name="Questions[${questionIndex}].Content" class="form-control" placeholder="نص السؤال"></textarea>
+                    </div>
+                    <div class="answer-group">
+                        <div class="form-group">
+                            <label>الإجابة الأولى</label>
+                            <input name="Questions[${questionIndex}].FirstAnswer" class="form-control" placeholder="الإجابة الأولى" />
+                        </div>
+                        <div class="form-group">
+                            <label>الإجابة الثانية</label>
+                            <input name="Questions[${questionIndex}].SecondAnswer" class="form-control" placeholder="الإجابة الثانية" />
+                        </div>
+                        <div class="form-group">
+                            <label>الإجابة الثالثة</label>
+                            <input name="Questions[${questionIndex}].ThirdAnswer" class="form-control" placeholder="الإجابة الثالثة" />
+                        </div>
+                        <div class="form-group">
+                            <label>الإجابة الرابعة</label>
+                            <input name="Questions[${questionIndex}].ForthAnswer" class="form-control" placeholder="الإجابة الرابعة" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>الإجابة الصحيحة</label>
+                        <select name="Questions[${questionIndex}].CorrectAnswer" class="form-control">
+                            <option value="">اختر الإجابة الصحيحة</option>
+                            <option value="FirstAnswer">الإجابة الأولى</option>
+                            <option value="SecondAnswer">الإجابة الثانية</option>
+                            <option value="ThirdAnswer">الإجابة الثالثة</option>
+                            <option value="ForthAnswer">الإجابة الرابعة</option>
+                        </select>
+                    </div>
+                    <button type="button" class="btn btn-danger remove-question">حذف</button>
+                </div>`;
+
+            $('#questions-container').append(questionHtml);
+            questionIndex++;
+        });
+
+        $(document).on('click', '.remove-question', function () {
+            $(this).closest('.question-group').remove();
+            updateQuestionNumbers();
+        });
+
+        function updateQuestionNumbers() {
+            $('#questions-container .question-group').each(function (index) {
+                $(this).find('.question-number').text(index + 1);
+
+                $(this).find('textarea[name^="Questions"]').each(function () {
+                    var name = $(this).attr('name');
+                    var newName = name.replace(/\Questions\[\d+\]/, 'Questions[' + index + ']');
+                    $(this).attr('name', newName);
+                });
+
+                $(this).find('input[name^="Questions"]').each(function () {
+                    var name = $(this).attr('name');
+                    var newName = name.replace(/\Questions\[\d+\]/, 'Questions[' + index + ']');
+                    $(this).attr('name', newName);
+                });
+
+                $(this).find('select[name^="Questions"]').each(function () {
+                    var name = $(this).attr('name');
+                    var newName = name.replace(/\Questions\[\d+\]/, 'Questions[' + index + ']');
+                    $(this).attr('name', newName);
+                });
+            });
+        }
+    });
+</script>
+</body>
+</html>

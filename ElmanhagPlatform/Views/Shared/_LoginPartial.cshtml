@@ -1,0 +1,23 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Http
+@using System.Security.Claims
+@inject SignInManager<IdentityUser> SignInManager
+@using ElmanhagPlatform.Data
+@inject AppDbContext _context
+@{
+    var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+    var user = _context.ApplicationUsers.Find(userId);
+}
+@if (SignInManager.IsSignedIn(User) && user.ConfirmAccount == 3)
+{
+    <li>
+        <a href="javascript:document.getElementById('logoutForm').submit()" class="nav-item nav-link">تسجيل الخروج</a>
+        <form id="logoutForm" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post" style="display: none;">
+        </form>
+    </li>
+}
+else if (!User.IsInRole("Student") || (User.IsInRole("Student") && user.ConfirmAccount == 3))
+{
+    <li><a asp-action="Create" asp-controller="Student" class="nav-item nav-link">إنشاء حساب</a></li>
+    <li><a asp-area="Identity" asp-page="/Account/Login" class="nav-item nav-link">تسجيل الدخول</a></li>
+}

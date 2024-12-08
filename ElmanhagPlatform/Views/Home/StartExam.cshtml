@@ -1,0 +1,159 @@
+﻿@model IEnumerable<Question>
+
+@{
+    ViewData["Title"] = "Exame";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="text-center p-5 backe">
+        <h2 class="mr-3" style="text-align: center; color: blue;">@ViewBag.Exam.Name</h2>
+    </div>
+    <h3 style="text-align: center;">
+        <div class="timer1 timer dealend-timer" data-duration="@ViewBag.Exam.Duration"></div>
+    </h3>
+
+    <div class="br-pagebody">
+        <div class="br-section-wrapper">
+            @if (Model.Any())
+            {
+                <form method="post" id="examForm" asp-action="SendAnswer" asp-controller="Home" onsubmit="return confirmSubmit();">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    @for (var i = 0; i < Model.Count(); i++)
+                    {
+                        var item = Model.ElementAt(i);
+                        <div class="row mb-3">
+                            <label class="text-dark font-weight-bold"><strong>@item.Content:</strong></label>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <input type="radio" name="resultsVM[@i].SelectedAnswer" value="FirstAnswer" class="form-check-input" />
+                                <label class="form-check-label"> أ. @item.FirstAnswer</label>
+                            </div>
+                            <div class="col-12">
+                                <input type="radio" name="resultsVM[@i].SelectedAnswer" value="SecondAnswer" class="form-check-input" />
+                                <label class="form-check-label"> ب. @item.SecondAnswer</label>
+                            </div>
+                            <div class="col-12">
+                                <input type="radio" name="resultsVM[@i].SelectedAnswer" value="ThirdAnswer" class="form-check-input" />
+                                <label class="form-check-label"> ج. @item.ThirdAnswer</label>
+                            </div>
+                            <div class="col-12">
+                                <input type="radio" name="resultsVM[@i].SelectedAnswer" value="ForthAnswer" class="form-check-input" />
+                                <label class="form-check-label"> د. @item.ForthAnswer</label>
+                            </div>
+                            <input type="hidden" name="resultsVM[@i].QuestionId" value="@item.Id" />
+                        </div>
+                    }
+                    <input type="hidden" name="id" value="@ViewBag.id">
+                    <div class="form-layout-footer mg-t-30 text-center">
+                        <input type="submit" value="ارسال الاجابات" class="btn btn-info">
+                        <a href="@Url.Action("GetCourseDetails", "Home", new { id = ViewBag.CourseId })" class="btn btn-primary" onclick="return confirmBack();">رجوع</a>
+                    </div>
+                </form>
+            }
+        </div>
+    </div>
+
+    @section Scripts {
+        @Html.Partial("_ValidationScriptsPartial")
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                var formSubmitted = false;
+                var timeEnded = false;
+
+                var form = document.getElementById('examForm');
+                var courseId = "@ViewBag.CourseId";
+
+                form.addEventListener('submit', function () {
+                    formSubmitted = true;
+                });
+
+                window.addEventListener('beforeunload', function (event) {
+                    if (!formSubmitted && !timeEnded) {
+                        var alertMessage = 'هل أنت متأكد أنك تريد مغادرة الصفحة؟ سيتم فقدان جميع الإجابات غير المحفوظة.';
+                        event.preventDefault();
+                        event.returnValue = alertMessage;
+                    }
+                });
+
+                var timers = document.querySelectorAll('.dealend-timer');
+
+                timers.forEach(function (timer) {
+                    var duration = parseInt(timer.getAttribute('data-duration'));
+                    if (isNaN(duration)) {
+                        timer.innerHTML = "مدة الامتحان غير متاحة!";
+                        return;
+                    }
+                    var endTime = new Date();
+                    endTime.setMinutes(endTime.getMinutes() + duration);
+
+                    function updateTimer() {
+                        var now = new Date();
+                        var timeDifference = endTime - now;
+                        if (timeDifference <= 0) {
+                            timer.innerHTML = "انتهى الوقت!";
+                            clearInterval(timerInterval);
+                            timeEnded = true;
+                            form.submit();
+
+                            setTimeout(function () {
+                                window.location.href = '/Home/GetCourseDetails/' + courseId;
+                            }, 3000);
+                            return;
+                        }
+                        var hours = Math.floor((timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                        var minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
+                        var seconds = Math.floor((timeDifference % 60000) / 1000);
+                        timer.innerHTML = (hours > 0 ? hours + " س " : "") + minutes + " د " + seconds + " ث ";
+                    }
+                    var timerInterval = setInterval(updateTimer, 1000);
+                    updateTimer();
+                });
+            });
+        </script>
+
+        <script>
+            function confirmSubmit() {
+                var questions = document.querySelectorAll('input[type="radio"]');
+                var answered = false;
+
+                for (var i = 0; i < questions.length; i++) {
+                    if (questions[i].checked) {
+                        answered = true;
+                        break;
+                    }
+                }
+
+                if (!answered) {
+                    alert('يرجى الإجابة على سؤال واحد على الأقل قبل إرسال النموذج.');
+                    return false;
+                }
+
+                return confirm('هل أنت متأكد من إرسال الإجابات؟');
+            }
+        </script>
+
+        <script>
+            function confirmBack() {
+                var confirmResult = confirm('هل أنت متأكد أنك تريد العودة؟ سيتم فقدان جميع الإجابات غير المحفوظة.');
+                if (confirmResult) {
+                    window.location.href = '@Url.Action("GetCourseDetails", "Home", new { id = ViewBag.CourseId })';
+                }
+                return false;
+            }
+        </script>
+    }
+</body>
+</html>

@@ -1,0 +1,225 @@
+﻿@using ElmanhagPlatform.Models;
+@model ApplicationUser
+
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+
+@{
+    ViewData["Title"] = "Home Page";
+
+}
+
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+    <head>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        .position-relative {
+            position: relative;
+        }
+
+        .image-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 1.75rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        a:hover .image-text {
+            opacity: 1;
+        }
+
+        .img-fluid:hover {
+            opacity: 0.8;
+        }
+
+        .le {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .text-start, .text-end {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .course-link {
+            color: #007bff;
+            text-decoration: underline;
+        }
+
+            .course-link:hover {
+                color: #0056b3;
+                text-decoration: none;
+            }
+
+        .custom-circle {
+            width: 185px;
+            height: 185px; 
+            border-radius: 50%;
+        }
+
+    </style>
+    </head>
+<body>
+
+    <section id="hero" style="background-image:url(images/billboard-bg.png); background-repeat: no-repeat; ">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6 pe-5 mt-5 mt-md-0">
+                    <h2 class="display-1 text-uppercase">أ.@Model.FullName</h2>
+                    <h5 class="text-primary">مادة @Model.MaterialName</h5>
+                    <h6>@Model.descreption</h6>
+                    <div>
+                        <form id="form" class="d-flex align-items-center position-relative ">
+                            @if (!SignInManager.IsSignedIn(User))
+                            {
+                                <a asp-action="Create" asp-controller="Student" class="btn btn-primary rounded-pill py-sm-3 px-sm-5 me-3 animated slideInLeft">اشترك الان!</a>
+                            }
+                        </form>
+                    </div>
+                </div>
+@*                 <div class="col-md-6 mt-5">
+                    <img src="~/images/@Model.ImageOfCard" alt="img" class="img-fluid">
+                </div> *@
+                <div class="offset-md-1 col-md-5">
+                    <img src="~/images/@Model.ImageOfCard" alt="img" class="img-fluid rounded-circle">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Classes Start -->
+    <div class="container-xxl py-5">
+        <div class="container">
+            <div class="row g-5 align-items-center">
+                <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.1s">
+                    <h1 class="text-primary">الصفوف الدراسية</h1>
+                    <h5>
+                        نحرص على تقديم مواد تعليمية متكاملة تتماشى مع المناهج الدراسية الرسمية وتلبي احتياجات الطلاب بطريقة سهلة ومبسطة.
+                        مع توفر شروحات تفصيلية، تدريبات تفاعلية، واختبارات تقييمية منتظمة، نسعى لأن يكون كل طالب قادرًا على التعلم بطريقته الخاصة وفي وقته المناسب.
+                    </h5>
+                    <hr />
+                    </h6>
+                    <h6 class="text-primary">يمكنك الوصول إلى كورسات الصفوف التالية:</h6>
+                    <ul>
+                        @if(Model.IsPreparatory == true)
+                        {
+                            <div class="col-12 mb-2">
+                                <h5>المرحلة الإعدادية</h5>
+                            </div>
+                            <li>
+                                <a asp-action="Courses" asp-controller="Home" asp-route-id="@Model.Id" asp-route-year="الصف الأول الاعدادي" class="course-link">
+                                    <strong>الصف الأول الاعدادي</strong>
+                                </a>
+                            </li>
+                            <li>
+                                <a asp-action="Courses" asp-controller="Home" asp-route-id="@Model.Id" asp-route-year="الصف الثاني الاعدادي" class="course-link">
+                                    <strong>الصف الثاني الاعدادي</strong>
+                                </a>
+                            </li>
+                            <li>
+                                <a asp-action="Courses" asp-controller="Home" asp-route-id="@Model.Id" asp-route-year="الصف الثالث الاعدادي" class="course-link">
+                                    <strong>الصف الثالث الاعدادي</strong>
+                                </a>
+                            </li>
+                        }
+                        @if (Model.IsSecondary == true)
+                        {
+                            <div class="col-12 mb-2 mt-4">
+                                <h5>المرحلة الثانوية</h5>
+                            </div>
+                            <li>
+                                <a asp-action="Courses" asp-controller="Home" asp-route-id="@Model.Id" asp-route-year="الصف الأول الثانوي" class="course-link">
+                                    <strong>الصف الأول الثانوي</strong>
+                                </a>
+                            </li>
+                            <li>
+                                <a asp-action="Courses" asp-controller="Home" asp-route-id="@Model.Id" asp-route-year="الصف الثاني الثانوي" class="course-link">
+                                    <strong>الصف الثاني الثانوي</strong>
+                                </a>
+                            </li>
+                            <li>
+                                <a asp-action="Courses" asp-controller="Home" asp-route-id="@Model.Id" asp-route-year="الصف الثالث الثانوي" class="course-link">
+                                    <strong>الصف الثالث الثانوي</strong>
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                    @if (!SignInManager.IsSignedIn(User))
+                    {
+                        <a asp-action="Create" asp-controller="Student" class="btn btn-primary rounded-pill py-sm-3 px-sm-5 me-3 animated slideInLeft">اشترك الان!</a>
+                    }
+                </div>
+                @* <div class="col-lg-6 about-img wow fadeInUp" data-wow-delay="0.5s">
+                    <div class="row">
+                        @if (Model.IsPreparatory == true)
+                        {
+                            <div class="col-12 text-center mb-2">
+                                <h5>المرحلة الإعدادية</h5>
+                            </div>
+                            <div class="col-12 text-center mb-2">
+                                <a asp-action="Courses" asp-controller="Home" asp-route-id="@Model.Id" asp-route-year="الصف الأول الاعدادي">
+                                    <img class="img-fluid custom-circle bg-light p-2" src="~/img/اول.jpeg" alt="">
+                                    <span class="image-text" style="color: black;">الصف الأول الاعدادي</span>
+                                </a>
+                            </div>
+                            <div class="col-6 text-start mb-2">
+                                <a asp-action="Courses" asp-controller="Home" asp-route-id="@Model.Id" asp-route-year="الصف الثاني الاعدادي">
+                                    <img class="img-fluid custom-circle bg-light p-2" src="~/img/ثاني.jpeg" alt="">
+                                    <span class="image-text" style="color: black;">الصف الثاني الاعدادي</span>
+                                </a>
+                            </div>
+                            <div class="col-6 text-end mb-2">
+                                <a asp-action="Courses" asp-controller="Home" asp-route-id="@Model.Id" asp-route-year="الصف الثالث الاعدادي">
+                                    <img class="img-fluid custom-circle bg-light p-2" src="~/img/ثالث.jpeg" alt="">
+                                    <span class="image-text" style="color: black;">الصف الثالث الاعدادي</span>
+                                </a>
+                            </div>
+                        }
+
+                        @if (Model.IsSecondary == true)
+                        {
+                            <div class="col-12 text-center mb-2 mt-4">
+                                <h5>المرحلة الثانوية</h5>
+                            </div>
+                            <div class="col-12 text-center mb-2">
+                                <a asp-action="Courses" asp-controller="Home" asp-route-id="@Model.Id" asp-route-year="الصف الأول الثانوي">
+                                    <img class="img-fluid custom-circle bg-light p-2" src="~/img/111133.jpeg" alt="">
+                                    <span class="image-text" style="color: black;">الصف الأول الثانوي</span>
+                                </a>
+                            </div>
+                            <div class="col-6 text-start mb-2">
+                                <a asp-action="Courses" asp-controller="Home" asp-route-id="@Model.Id" asp-route-year="الصف الثاني الثانوي">
+                                    <img class="img-fluid custom-circle bg-light p-2" src="~/img/two.jpeg" alt="">
+                                    <span class="image-text" style="color: black;">الصف الثاني الثانوي</span>
+                                </a>
+                            </div>
+                            <div class="col-6 text-end mb-2">
+                                <a asp-action="Courses" asp-controller="Home" asp-route-id="@Model.Id" asp-route-year="الصف الثالث الثانوي">
+                                    <img class="img-fluid custom-circle bg-light p-2" src="~/img/th3.jpeg" alt="">
+                                    <span class="image-text" style="color: black;">الصف الثالث الثانوي</span>
+                                </a>
+                            </div>
+                        }
+                    </div>
+                </div> *@
+            </div>
+        </div>
+    </div>
+    <!-- Classes End -->
+
+</body>
+</html>

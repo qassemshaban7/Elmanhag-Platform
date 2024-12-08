@@ -1,0 +1,113 @@
+﻿@using ElmanhagPlatform.Models;
+@model Lecture
+
+@{
+    ViewData["Title"] = "Login Page";
+}
+<header>
+    <style>
+        .form-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .form-group {
+            flex: 1 1 60%;
+            min-width: 225px;
+        }
+
+        media (max-width: 768px) {
+            .form-container {
+                flex-direction: column;
+            }
+        }
+
+        .hire-info {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: auto;
+            padding: 20px;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        .container {
+            margin: 0 auto;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .hire-info form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            /* color: #ff9933; */
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .btn-h {
+            /* background-color: #ff9933; */
+            color: #333;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+
+            .btn-h:hover {
+                /* background-color: #ff9933; */
+            }
+    </style>
+</header>
+
+<div id="contact" class="hire">
+    <div class="container">
+        <div class="hire-details">
+            <h1 class="text-primary">تعديل بيانات محاضرة كورس @ViewBag.course.Name</h1>
+            <div class="hire-info">
+                <form id="account" method="post" asp-action="Edit" asp-controller="Lecture" enctype="multipart/form-data">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-container">
+                        <div class="form-group">
+                            <input asp-for="Name" autocomplete="on" aria-required="true" type="text" class="form-control" placeholder="اسم المحاضرة" onfocus="this.placeholder = ''" onblur="this.placeholder ='اسم المحاضرة'">
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <textarea asp-for="Content" autocomplete="on" aria-required="true" type="text" class="form-control" placeholder="محتوى المحاضرة" onfocus="this.placeholder = ''" onblur="this.placeholder ='محتوى المحاضرة'"></textarea>
+                            <span asp-validation-for="Content" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
+                    <input type="hidden" asp-for="Id" />
+                    <div class="form-layout-footer mg-t-30 text-center">
+                        <button type="submit" class="btn-1 btn-h btn btn-primary">
+                            <i class="fas fa-save"></i> حفظ
+                        </button>
+                        <a asp-controller="Lecture" asp-action="Index" asp-route-id="@ViewBag.course.Id" class="btn-1 btn-h btn btn-primary">
+                            <i class="fas fa-arrow-left"></i> رجوع
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
+}

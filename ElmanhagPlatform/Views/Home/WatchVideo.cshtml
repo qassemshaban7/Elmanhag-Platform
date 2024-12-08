@@ -1,0 +1,201 @@
+﻿@using ElmanhagPlatform.ViewModels.CourseDetails
+@model VideoVM
+
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+
+@{
+    ViewData["Title"] = Model.Name;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://vjs.zencdn.net/7.15.4/video-js.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css">
+    <script src="https://vjs.zencdn.net/7.15.4/video.min.js"></script>
+
+    <style>
+        .content-wrapper {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            gap: 20px;
+        }
+
+        #videoContainer {
+            width: 80%;
+            max-width: 900px;
+            aspect-ratio: 16 / 9;
+            position: relative;
+        }
+
+        .video-description {
+            margin-top: 10px;
+            color: black;
+        }
+        .vjs-watermark {
+            position: absolute;
+            color: rgba(255, 0, 0, 0.7);
+            font-size: 10px;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+            pointer-events: none;
+            white-space: nowrap;
+            z-index: 9999;
+            top: 30px;
+            left: 30px;
+        }
+
+        .vjs-custom-button {
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-size: 14px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+            .vjs-custom-button:hover {
+                background-color: #0056b3;
+            }
+    </style>
+</head>
+
+<body>
+    <div class="container content-wrapper">
+        <h1>@Model.Name</h1>
+        <strong style="color: blue;">الوصف:</strong>
+        <span style="color: black;">@Model.Description</span><br />
+
+        <div id="videoContainer">
+            <video id="videoPlayer" class="video-js vjs-default-skin" controls preload="auto"
+                   data-setup='{
+                       "controls": true,
+                       "fluid": true,
+                       "playbackRates": [0.5, 1, 1.5, 2],
+                       "techOrder": ["html5"],
+                       "controlBar": {
+                           "pictureInPictureToggle": false
+                       }
+                   }'>
+                <source src="~/videos/@Model.VideoPath" type="video/mp4">
+            </video>
+        </div>
+
+        <div class="align-content-center mt-3">
+            <a asp-action="GetCourseDetails" asp-controller="Home" asp-route-id="@ViewBag.courseId"
+               class="btn btn-danger" onclick="return closeVideo()">رجوع</a>
+        </div>
+    </div>
+
+    <script>
+        var watchStartTime, videoPausedTime = 0, totalPausedDuration = 0;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const videoPlayer = videojs('videoPlayer');
+            showVideo(videoPlayer);
+
+            videoPlayer.ready(() => {
+                addCustomButtons(videoPlayer);
+                addWatermark(videoPlayer);
+            });
+
+            setInterval(() => moveWatermark(videoPlayer), 7000);
+        });
+
+        function showVideo(player) {
+            watchStartTime = new Date();
+            player.play();
+
+            player.on('pause', () => videoPausedTime = new Date());
+            player.on('play', () => {
+                if (videoPausedTime) {
+                    totalPausedDuration += Math.floor((new Date() - videoPausedTime) / 1000);
+                    videoPausedTime = 0;
+                }
+            });
+
+            startWatchingVideo();
+        }
+
+        function closeVideo() {
+            const videoPlayer = videojs('videoPlayer');
+            videoPlayer.pause();
+            calculateAndSendWatchTime();
+            return true;
+        }
+
+        function startWatchingVideo() {
+            fetch('/Home/StartWatching', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ videoId: @Model.Id })
+            }).catch(console.error);
+        }
+
+        function calculateAndSendWatchTime() {
+            const watchEndTime = new Date();
+            const totalWatchedTime = Math.floor((watchEndTime - watchStartTime) / 1000);
+            const actualWatchedTime = totalWatchedTime - totalPausedDuration;
+            const minutesWatched = Math.floor(actualWatchedTime / 60);
+
+            fetch('/Home/EndWatching', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ videoId: @Model.Id, minutesWatched })
+            }).catch(console.error);
+        }
+
+        window.addEventListener('beforeunload', calculateAndSendWatchTime);
+        window.addEventListener('pagehide', calculateAndSendWatchTime);
+
+        function addWatermark(player) {
+            const watermark = document.createElement('div');
+            watermark.className = 'vjs-watermark';
+            watermark.innerText = '@ViewBag.StudentName - @ViewBag.UserName';
+
+            const videoContainer = player.el();
+            videoContainer.appendChild(watermark);
+        }
+
+        function moveWatermark(player) {
+            const watermark = player.el().querySelector('.vjs-watermark');
+            const videoContainer = player.el();
+
+            const maxX = videoContainer.clientWidth - watermark.clientWidth;
+            const maxY = videoContainer.clientHeight - watermark.clientHeight;
+
+            const x = Math.random() * maxX;
+            const y = Math.random() * maxY;
+
+            watermark.style.transform = `translate(${x}px, ${y}px)`;
+        }
+
+        function addCustomButtons(player) {
+            const rewindButton = player.controlBar.addChild('button', {
+                text: '<< 10 ثواني',
+                className: 'vjs-custom-button'
+            });
+            rewindButton.el().onclick = () => player.currentTime(Math.max(0, player.currentTime() - 10));
+
+            const forwardButton = player.controlBar.addChild('button', {
+                text: '>> 5 ثواني',
+                className: 'vjs-custom-button'
+            });
+            forwardButton.el().onclick = () => player.currentTime(player.currentTime() + 5);
+
+            player.controlBar.el().insertBefore(rewindButton.el(), player.controlBar.fullscreenToggle.el());
+            player.controlBar.el().insertBefore(forwardButton.el(), player.controlBar.fullscreenToggle.el());
+        }
+    </script>
+</body>
+</html>

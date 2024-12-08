@@ -1,0 +1,357 @@
+﻿@model IEnumerable<Video>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<head>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</head>
+
+@section Styles {
+    <link rel="stylesheet" type="text/css" href="~/lib/table/datatable/datatables.css">
+    <link rel="stylesheet" type="text/css" href="~/lib/table/datatable/dt-global_style.css">
+    <link href="~/lib/toaster/toaster.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha384-k6RqeWeci5ZR/Lv4MR0sA0FfDOMvdL1eFiFmF5wN3K3jVrGzX+gY98/rFO7tB2kc" crossorigin="anonymous">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
+    <style>
+        .page-margin-top {
+            margin-top: 50px;
+        }
+
+        .cen {
+            text-align: center;
+        }
+
+        .br-pagebody {
+            margin-top: 20px;
+        }
+
+        .ri {
+            text-align: left;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            color: #343a40;
+            font-family: 'Arial', sans-serif;
+            direction: rtl;
+            text-align: right;
+        }
+
+        .br-pagetitle h1 {
+            color: #0066cc;
+            font-size: 28px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        table {
+            width: 100%;
+            background-color: #ffffff;
+            color: #333333;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+            table th, table td {
+                padding: 12px;
+                text-align: center;
+                border-bottom: 1px solid #dee2e6;
+            }
+
+            table th {
+                background-color: #f2f2f2;
+                color: #333333;
+            }
+
+        .btn {
+            padding: 8px 16px;
+            font-size: 14px;
+            border-radius: 4px;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            color: #fff;
+        }
+
+        .btn-primary {
+            color: #fff;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            color: #fff;
+        }
+
+        .btn-success {
+            background-color: #28a745;
+            color: #fff;
+        }
+
+        .image-receipt img {
+            border-radius: 5px;
+            max-width: 100px;
+            max-height: 100px;
+        }
+
+        .autoo {
+            height: auto;
+        }
+
+        .dataTables_filter {
+            float: left !important;
+        }
+
+        .dataTables_wrapper .dataTables_filter input {
+            height: 40px;
+            font-size: 16px;
+            padding: 5px 10px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+        }
+
+        .dataTables_wrapper .dataTables_length {
+            height: 50px;
+            line-height: 50px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+            .dataTables_wrapper .dataTables_length select {
+                height: 40px;
+                font-size: 16px;
+                padding: 5px 10px;
+                border: 1px solid #ced4da;
+                border-radius: 4px;
+            }
+
+        .text-info {
+            color: #17a2b8;
+        }
+
+        .modal-header {
+            background-color: #ff9933;
+            color: white;
+        }
+
+        .modal-body strong {
+            color: #333333;
+        }
+
+        .size {
+            font-size: 2rem;
+            width: 50px;
+            height: 50px;
+            line-height: 1;
+        }
+    </style>
+}
+
+<div class="br-pagetitle page-margin-top">
+    <div class="row align-items-center justify-content-between">
+        <div class="col">
+            <h1>فيديوهات المحاضرة "@ViewBag.course.Name"</h1>
+        </div>
+        <div class="col-auto">
+            <a asp-action="Create" asp-controller="Video" asp-route-id="@ViewBag.course.Id" class="btn btn-primary">
+                <i class="fas fa-plus"></i> إضافة فيديو
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="br-pagebody">
+    <div class="br-section-wrapper">
+        <div class="table-wrapper">
+            <table id="deptsTable" class="table display responsive nowrap">
+                <thead>
+                    <tr>
+                        <th>اسم الفيديو</th>
+                        <th>مدة الفيديو</th>
+                        <th>التفاصيل</th>
+                        <th>تعديل</th>
+                        <th>حذف</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.Name</td>
+                            <td>@item.Duration</td>
+                            <td>
+                                <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#ModalUser_@item.Id">
+                                    عرض
+                                </button>
+                            </td>
+                            <td>
+                                <a asp-action="Edit" asp-controller="Video" asp-route-id="@item.Id" class="btn btn-success text-white">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                            </td>
+                            <td>
+                                <a asp-action="Delete" asp-controller="Video" asp-route-id="@item.Id" class="btn btn-danger" onclick="return confirm('هل أنت متأكد من حذف الفيديو @item.Name؟');">
+                                    <i class="fas fa-trash-alt"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<input type="hidden" id="created" data-value="@ViewBag.created" />
+<input type="hidden" id="updated" data-value="@ViewBag.updated" />
+<input type="hidden" id="deleted" data-value="@ViewBag.deleted" />
+
+@foreach (var item in Model)
+{
+    <div class="modal fade" id="ModalUser_@item.Id" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="exampleModalLabel"> فيديو: @item.Name</h5>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="اغلاق">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-3">
+                        <div class="col">
+                            <strong>اسم الفيديو :</strong> <span class="text-info">@item.Name</span>
+                        </div>
+                        <div class="col">
+                            <strong>مدة الفيديو :</strong> <span class="text-info">@item.Duration</span>
+                        </div>
+                        
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <strong>اسم المحاضرة :</strong> <span class="text-info">@ViewBag.course.Name</span>
+                        </div>
+                        <div class="col">
+                            <strong>وصف الفيديو :</strong> <span class="text-info">@item.Description</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">إغلاق</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<div class="text-center">
+    <a asp-action="Index" asp-controller="Lecture" asp-route-id="@ViewBag.CourseId" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> رجوع
+    </a>
+</div>
+
+@section scripts {
+    @*     <partial name="_ValidationScriptsPartial" />
+ *@
+    <!-- BEGIN PAGE LEVEL SCRIPTS -->
+    <script src="~/lib/table/datatable/datatables.js"></script>
+    <script>
+        $('#deptsTable').DataTable({
+            "oLanguage": {
+                "oPaginate": { "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>', "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>' },
+                "sInfo": "عدد النتائج   _TOTAL_",
+                "sSearch": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
+                "sSearchPlaceholder": "بحث...",
+                "sLengthMenu": "النتائج :  _MENU_ ",
+            },
+            "order": [[1, "desc"]],
+            "stripeClasses": [],
+            "lengthMenu": [7, 10, 20, 50, 100],
+            "pageLength": 20,
+            "scrollX": true,
+            drawCallback: function () { $('.dataTables_paginate > .pagination').addClass(' pagination-style-13 pagination-bordered mb-5'); }
+        });
+    </script>
+    <link href="~/lib/toaster/toaster.css" rel="stylesheet" />
+    <script src="~/lib/toaster/toaster.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var created = $("#created").data("value");
+            if (created == "True") {
+                toastr.options = {
+                    "closeButton": false,
+                    "debug": false,
+                    "newestOnTop": false,
+                    "progressBar": true,
+                    "positionClass": "toast-top-left",
+                    "preventDuplicates": true,
+                    "onclick": null,
+                    "showDuration": "300",
+                    "hideDuration": "1000",
+                    "timeOut": "12000",
+                    "extendedTimeOut": "1000",
+                    "showEasing": "swing",
+                    "hideEasing": "linear",
+                    "showMethod": "fadeIn",
+                    "hideMethod": "fadeOut"
+                }
+                toastr.success("تم اضافة الفيديو بنجاح");
+            }
+
+            var updated = $("#updated").data("value");
+            if (updated == "True") {
+                toastr.options = {
+                    "closeButton": false,
+                    "debug": false,
+                    "newestOnTop": false,
+                    "progressBar": true,
+                    "positionClass": "toast-top-left",
+                    "preventDuplicates": true,
+                    "onclick": null,
+                    "showDuration": "300",
+                    "hideDuration": "1000",
+                    "timeOut": "12000",
+                    "extendedTimeOut": "1000",
+                    "showEasing": "swing",
+                    "hideEasing": "linear",
+                    "showMethod": "fadeIn",
+                    "hideMethod": "fadeOut"
+                }
+                toastr.success("تم تعديل الفيديو بنجاح");
+            }
+
+            var deleted = $("#deleted").data("value");
+            if (deleted == "True") {
+                toastr.options = {
+                    "closeButton": false,
+                    "debug": false,
+                    "newestOnTop": false,
+                    "progressBar": true,
+                    "positionClass": "toast-top-left",
+                    "preventDuplicates": true,
+                    "onclick": null,
+                    "showDuration": "300",
+                    "hideDuration": "1000",
+                    "timeOut": "12000",
+                    "extendedTimeOut": "1000",
+                    "showEasing": "swing",
+                    "hideEasing": "linear",
+                    "showMethod": "fadeIn",
+                    "hideMethod": "fadeOut"
+                }
+                toastr.success("تم حذف الفيديو بنجاح");
+            }
+        });
+    </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha384-KyZXEAg3QhqLMpG8r+Knujsl5/6Z9ON8q3BLPO+4PU1/94cbfZ9AJJdr7Op7+FLf" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kaTiGVXtbqQjI9l4xTwEnLqzyrLQa5+6ihc2mI6R5Ba0U6gIxNwQBd9ihWc6+6elc" crossorigin="anonymous"></script>
+
+    <!-- END PAGE LEVEL SCRIPTS -->
+}
+

@@ -1,0 +1,179 @@
+﻿@using ElmanhagPlatform.ViewModels.TeacherVM;
+@model CreateTeacherVM
+
+@{
+    ViewData["Title"] = "Login Page";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <style>
+        .form-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .form-group {
+            flex: 1 1 45%;
+            min-width: 225px;
+        }
+
+        media (max-width: 768px) {
+            .form-container {
+                flex-direction: column;
+            }
+        }
+
+        .hire-info {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: auto;
+            padding: 20px;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        .container {
+            margin: 0 auto;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .hire-info form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            /* color: #ff9933; */
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .btn-h {
+            /* background-color: #ff9933; */
+            color: #333;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+
+            .btn-h:hover {
+                /* background-color: #ff9933; */
+            }
+    </style>
+</head>
+
+@section Styles {
+    <link rel="stylesheet" type="text/css" href="~/lib/table/datatable/datatables.css">
+    <link rel="stylesheet" type="text/css" href="~/lib/table/datatable/dt-global_style.css">
+    <link href="~/lib/toaster/toaster.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha384-k6RqeWeci5ZR/Lv4MR0sA0FfDOMvdL1eFiFmF5wN3K3jVrGzX+gY98/rFO7tB2kc" crossorigin="anonymous">
+}
+<body>
+    <div id="contact" class="hire">
+        <div class="container">
+            <div class="hire-details">
+                <h1 class="text-primary">اضافة مدرس</h1>
+                <div class="hire-info">
+                    <form id="account" method="post" asp-action="Create" asp-controller="Teacher" enctype="multipart/form-data" asp-route-returnurl="@ViewData["ReturnUrl"]">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="form-container">
+                            <div class="form-group">
+                                <input asp-for="FullName" autocomplete="on" aria-required="true" type="text" class="form-control" placeholder="اسم المدرس" onfocus="this.placeholder = ''" onblur="this.placeholder ='اسم المدرس'">
+                                <span asp-validation-for="FullName" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <input asp-for="UserName" autocomplete="tel" aria-required="true" type="tel" class="form-control" placeholder="اسم المستخدم" onfocus="this.placeholder = ''" onblur="this.placeholder ='اسم المستخدم'">
+                                <span asp-validation-for="UserName" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <input asp-for="PhoneNumber" autocomplete="tel" aria-required="true" type="tel" class="form-control" placeholder="رقم الهاتف" onfocus="this.placeholder = ''" onblur="this.placeholder ='رقم الهاتف'">
+                                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <input asp-for="Email" autocomplete="on" aria-required="true" type="email" class="form-control" placeholder="البريد الالكتروني" onfocus="this.placeholder = ''" onblur="this.placeholder ='البريد الالكتروني'">
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <input asp-for="MaterialName" autocomplete="on" aria-required="true" type="text" class="form-control" placeholder="اسم المادة" onfocus="this.placeholder = ''" onblur="this.placeholder ='اسم المادة'">
+                                <span asp-validation-for="MaterialName" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label>صورة شخصية<span class="tx-danger"></span></label>
+                                <input asp-for="Image" type="file" class="form-control-image" accept="image/*" aria-required="true" placeholder="صورة شخصية" onfocus="this.placeholder = ''" onblur="this.placeholder ='صورة شخصية'">
+                                <span asp-validation-for="Image" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <input asp-for="Password" type="password" autocomplete="current-password" aria-required="true" class="form-control" placeholder="الرقم السري" onfocus="this.placeholder = ''" onblur="this.placeholder ='الرقم السري'">
+                                <span asp-validation-for="Password" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <input asp-for="ConfirmPassword" type="password" autocomplete="current-password" aria-required="true" class="form-control" placeholder="تاكيد الرقم السري" onfocus="this.placeholder = ''" onblur="this.placeholder ='تاكيد الرقم السري'">
+                                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label>
+                                    <input asp-for="Preparatory" type="checkbox" class="form-check-input" />
+                                    مدرس اعدادي
+                                </label>
+                                <span asp-validation-for="Preparatory" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label>
+                                    <input asp-for="Secondry" type="checkbox" class="form-check-input" />
+                                    مدرس ثانوي
+                                </label>
+                                <span asp-validation-for="Secondry" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <textarea asp-for="descreption" autocomplete="on" aria-required="true" type="text" class="form-control" placeholder="وصف المدرس" onfocus="this.placeholder = ''" onblur="this.placeholder ='وصف المدرس'"></textarea>
+                                <span asp-validation-for="descreption" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
+                        <div class="form-layout-footer mg-t-30 text-center">
+                            <button id="login-submit" type="submit" class="btn-1 btn-h btn btn-primary" onclick="return validateSelection()">
+                                <i class="fas fa-plus"></i> اضافة
+                            </button>
+                            <a asp-controller="Teacher" asp-action="Index" class="btn-1 btn-h btn btn-primary">
+                                <i class="fas fa-arrow-left"></i> رجوع
+                            </a>
+                        </div>
+                        
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function validateSelection() {
+            var preparatoryChecked = document.getElementById('Preparatory').checked;
+            var secondryChecked = document.getElementById('Secondry').checked;
+
+            if (!preparatoryChecked && !secondryChecked) {
+                alert("يجب أن تختار على الأقل نوعًا واحدًا من التدريس (إعدادي أو ثانوي).");
+                return false;
+            }
+
+            return true;
+        }
+    </script>
+</body>
+</html>

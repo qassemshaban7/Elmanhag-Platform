@@ -1,0 +1,271 @@
+﻿@model IEnumerable<ApplicationUser>
+
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+
+<!DOCTYPE html>
+<html lang="ar">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+        <style>
+            .ca{
+                direction: ltr;
+                text-align: left;
+            }
+
+            .custom-button {
+                font-size: 16px; 
+                padding: 15px 30px; 
+                width: 200px;
+            }
+        </style>
+    </head>
+<body>
+    <div class="container-xxl bg-white p-0">
+
+        <!-- Carousel Start -->
+        <div class="container-fluid p-0 mb-5 ca">
+            <div class="owl-carousel header-carousel position-relative">
+                <div class="owl-carousel-item position-relative">
+                    <img class="img-fluid" src="img/packground1.jpg" alt="">
+                    <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center" style="background: rgba(0, 0, 0, .2);">
+                        <div class="container">
+                            <div class="row justify-content-start">
+                                <div class="col-10 col-lg-8">
+                                    <h1 class="display-2 text-white animated slideInDown mb-4">أفضل منصة تعليمية للطلاب  </h1>
+                                    <p class="fs-5 fw-medium text-white mb-4 pb-2">توفر منصة "مرچع" تجربة تعليمية متميزة تساعد الطلاب على التفوق من خلال أدوات تعليمية مبتكرة</p>
+                                    @if (!SignInManager.IsSignedIn(User))
+                                    {
+                                        <a asp-action="Create" asp-controller="Student" class="btn btn-primary rounded-pill py-sm-3 px-sm-5 me-3 animated slideInLeft">اشترك الان</a>
+                                    }
+                                    @* <a href="" class="btn btn-dark rounded-pill py-sm-3 px-sm-5 animated slideInRight">Our Classes</a> *@
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="owl-carousel-item position-relative">
+                    <img class="img-fluid" src="img/background2.png" alt="مرچع - المستقبل يبدأ هنا">
+                    <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center" style="background: rgba(0, 0, 0, .4);">
+                        <div class="container">
+                            <div class="row justify-content-start">
+                                <div class="col-10 col-lg-8">
+                                    <h1 class="display-2 text-white animated slideInDown mb-4">ابدأ مستقبلك مع "مرچع"</h1>
+                                    <p class="fs-5 fw-medium text-white mb-4 pb-2">منصة "مرچع" توفر لك البيئة المثالية لتحقيق النجاح الأكاديمي عبر أدوات تعلم مبتكرة ومحتوى متميز</p>
+                                    @if (!SignInManager.IsSignedIn(User))
+                                    {
+                                        <a asp-action="Create" asp-controller="Student" class="btn btn-primary rounded-pill py-sm-3 px-sm-5 me-3 animated slideInLeft">ابدأ الآن</a>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Carousel End -->
+
+        <!-- Facilities Start -->
+        <div class="container-xxl py-5">
+            <div class="container">
+                <div class="text-center mx-auto mb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 600px;">
+                    <h1 class="text-primary">منصة مرچع</h1>
+                    <h5>منصة "مرچع" توفر تجربة تعليمية متكاملة تهدف إلى مساعدة الطلاب على التفوق. بفضل مجموعة من الأدوات التعليمية المبتكرة، ودروس مصممة بعناية، يمكن للطلاب التعلم بأسلوب تفاعلي، مرن، ومنظم.</h5>
+
+                    @* <div class="container text-center mt-5"> *@
+                        <button id="showVideoButton" class="btn btn-primary custom-button">
+                            طريقة الاشتراك <i class="fa fa-youtube-play"></i>
+                        </button>
+                    @* </div> *@
+
+                    <div id="videoContainer" class="video-container mt-4" style="display: none;">
+                        <iframe width="560" height="315" src="https://www.youtube.com/embed/@(ViewBag.Url)" title="طريقة الاشتراك" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                </div>
+                <div class="row g-4">
+                    <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.1s">
+                        <div class="facility-item">
+                            <div class="facility-icon bg-primary">
+                                <span class="bg-primary"></span>
+                                <i class="fa fa-laptop fa-3x text-primary"></i>
+                                <span class="bg-primary"></span>
+                            </div>
+                            <div class="facility-text bg-primary">
+                                <h3 class="text-primary mb-3">الوصول في أي وقت</h3>
+                                <p class="mb-0">المنصة تتيح لك الوصول إلى الدروس التعليمية في أي وقت وأي مكان يناسبك.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.3s">
+                        <div class="facility-item">
+                            <div class="facility-icon bg-success">
+                                <span class="bg-success"></span>
+                                <i class="fa fa-comments fa-3x text-success"></i>
+                                <span class="bg-success"></span>
+                            </div>
+                            <div class="facility-text bg-success">
+                                <h3 class="text-success mb-3">التفاعل مع المدرسين</h3>
+                                <p class="mb-0">يمكنك التواصل مع المدرسين بشكل مباشر وطرح الأسئلة في أي وقت.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.5s">
+                        <div class="facility-item">
+                            <div class="facility-icon bg-warning">
+                                <span class="bg-warning"></span>
+                                <i class="fa fa-book-open fa-3x text-warning"></i>
+                                <span class="bg-warning"></span>
+                            </div>
+                            <div class="facility-text bg-warning">
+                                <h3 class="text-warning mb-3">تنوع المواد الدراسية</h3>
+                                <p class="mb-0">تتوفر العديد من الدروس المتنوعة في مختلف المواد الدراسية.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.7s">
+                        <div class="facility-item">
+                            <div class="facility-icon bg-info">
+                                <span class="bg-info"></span>
+                                <i class="fa fa-chart-line fa-3x text-info"></i>
+                                <span class="bg-info"></span>
+                            </div>
+                            <div class="facility-text bg-info">
+                                <h3 class="text-info mb-3">متابعة الأداء</h3>
+                                <p class="mb-0">المنصة توفر اختبارات دورية لمتابعة تقدمك وتحديد النقاط التي تحتاج إلى تحسين.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Facilities End -->
+       
+        <!-- Team Start -->
+        <div class="container-xxl py-5">
+            <div class="container">
+                <div class="text-center mx-auto mb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 600px;">
+                    <h1 class="mb-3">مدرسونا</h1>
+                    <h6>
+                        يضم فريق منصة "مرچع" نخبة من أفضل المدرسين المتخصصين في مختلف المواد الدراسية. جميع مدرسينا لديهم خبرة واسعة في مساعدة الطلاب على تحقيق التفوق، ويفخرون بتقديم دعم تعليمي تفاعلي ومخصص لكل طالب.
+                    </h6>
+                </div>
+                <div class="row g-4">
+                    @foreach (var item in Model)
+                    {
+                        <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+                            <div class="team-item position-relative">
+                                <a asp-action="View" asp-controller="Home" asp-route-id="@item.Id" >
+                                    <img class="img-fluid rounded-circle w-75" src="~/images/@item.ImageOfCard" alt="@item.FullName">
+                                    <div class="team-text">
+                                        <h3>أ.@item.FullName</h3>
+                                        <p><span>مادة </span>@item.MaterialName</p>
+                                        <div class="d-flex align-items-center">
+                                            <a class="btn btn-square btn-primary mx-1" href="@item.Facbook" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                                            <a class="btn btn-square btn-primary mx-1" href="@item.Telegram" target="_blank"><i class="fab fa-telegram"></i></a>
+                                            <a class="btn btn-square btn-primary mx-1" href="@item.Youtube" target="_blank"><i class="fab fa-youtube"></i></a>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+        <!-- Team End -->
+        
+        
+        @*  <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+        <div class="team-item position-relative">
+        <a asp-action="View" asp-controller="Home" asp-route-id="@item.Id" class="btn-2">
+        <img class="img-fluid rounded-circle w-75" src="~/images/@item.ImageOfCard" alt="@item.FullName">
+        <div class="team-text position-relative team-item">
+        <h3>أ.@item.FullName</h3>
+        <p><span>مادة </span>@item.MaterialName</p>
+        <div class="d-flex justify-content-end align-items-center">
+        <a class="btn btn-square btn-primary mx-1" href="@item.Facbook" target="_blank"><i class="fab fa-facebook-f"></i></a>
+        <a class="btn btn-square btn-primary mx-1" href="@item.Telegram" target="_blank"><i class="fab fa-telegram"></i></a>
+        <a class="btn btn-square btn-primary mx-1" href="@item.Youtube" target="_blank"><i class="fab fa-youtube"></i></a>
+        </div>
+        </div>
+        </a>
+        </div>
+        </div> *@
+
+
+    </div>
+
+        <input type="hidden" id="created" data-value="@ViewBag.created" />
+        <input type="hidden" id="updated" data-value="@ViewBag.updated" />
+
+    @section scripts {
+        <link href="~/lib/toaster/toaster.css" rel="stylesheet" />
+        <script src="~/lib/toaster/toaster.js"></script>
+
+        <script type="text/javascript">
+            $(document).ready(function () {
+                var created = $("#created").data("value");
+                if (created == "True") {
+                    toastr.options = {
+                        "closeButton": false,
+                        "debug": false,
+                        "newestOnTop": false,
+                        "progressBar": true,
+                        "positionClass": "toast-top-left",
+                        "preventDuplicates": true,
+                        "onclick": null,
+                        "showDuration": "300",
+                        "hideDuration": "1000",
+                        "timeOut": "12000",
+                        "extendedTimeOut": "1000",
+                        "showEasing": "swing",
+                        "hideEasing": "linear",
+                        "showMethod": "fadeIn",
+                        "hideMethod": "fadeOut"
+                    }
+                    toastr.success("تم إنشاء الحساب بنجاح! يرجى انتظار تأكيد المسؤول.");
+                }
+
+                var updated = $("#updated").data("value");
+                if (updated == "True") {
+                    toastr.options = {
+                        "closeButton": false,
+                        "debug": false,
+                        "newestOnTop": false,
+                        "progressBar": true,
+                        "positionClass": "toast-top-left",
+                        "preventDuplicates": true,
+                        "onclick": null,
+                        "showDuration": "300",
+                        "hideDuration": "1000",
+                        "timeOut": "12000",
+                        "extendedTimeOut": "1000",
+                        "showEasing": "swing",
+                        "hideEasing": "linear",
+                        "showMethod": "fadeIn",
+                        "hideMethod": "fadeOut"
+                    }
+                    toastr.success("تم تعديل الحساب بنجاح! يرجى انتظار تأكيد المسؤول.");
+                }
+
+            });
+        </script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha384-KyZXEAg3QhqLMpG8r+Knujsl5/6Z9ON8q3BLPO+4PU1/94cbfZ9AJJdr7Op7+FLf" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kaTiGVXtbqQjI9l4xTwEnLqzyrLQa5+6ihc2mI6R5Ba0U6gIxNwQBd9ihWc6+6elc" crossorigin="anonymous"></script>
+        <script>
+            document.getElementById("showVideoButton").addEventListener("click", function () {
+
+                document.getElementById("videoContainer").style.display = "block";
+                this.style.display = "none";
+            });
+        </script>
+
+        <!-- END PAGE LEVEL SCRIPTS -->
+    }
+
+</body>
+
+</html>

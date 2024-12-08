@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33829.357
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElmanhagPlatform", "ElmanhagPlatform\ElmanhagPlatform.csproj", "{D34093E0-7F30-408D-B7F2-A1B0EC45A1C5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D34093E0-7F30-408D-B7F2-A1B0EC45A1C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D34093E0-7F30-408D-B7F2-A1B0EC45A1C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D34093E0-7F30-408D-B7F2-A1B0EC45A1C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D34093E0-7F30-408D-B7F2-A1B0EC45A1C5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9112C48C-C0AD-4BD3-89D2-F33DDE2339E0}
+	EndGlobalSection
+EndGlobal
