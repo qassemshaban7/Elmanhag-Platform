@@ -1,0 +1,280 @@
+﻿@model IEnumerable<Course>
+
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+
+@{
+    ViewData["Title"] = "Courses Page";
+
+    var admin = _context.ApplicationUsers.Find("ecc07b18-f55e-4f6b-95bd-0e84f556135f");
+}
+
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <style>
+        .down {
+            color: end;
+        }
+        .cent{
+            text-align: center;
+        }
+        .no-courses-message {
+            text-align: center;
+            color: #ff0000;
+            font-size: 1.5rem;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Classes Start -->
+    <div class="container-xxl py-5">
+        <div class="container">
+            <div class="text-center mx-auto mb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 600px;">
+                @if (@ViewBag.year == "الصف الأول الثانوي")
+                {
+                    <h1 class="text-primary">كورسات الصف الأول الثانوي</h1>
+                }
+                else if (@ViewBag.year == "الصف الثاني الثانوي")
+                {
+                    <h1 class="text-primary">كورسات الصف الثاني الثانوي</h1>
+                }
+                else if (@ViewBag.year == "الصف الثالث الثانوي")
+                {
+                    <h1 class="text-primary">كورسات الصف الثالث الثانوي</h1>
+                }
+                else if (@ViewBag.year == "الصف الثالث الاعدادي")
+                {
+                    <h1 class="text-primary">كورسات الصف الثالث الاعدادي</h1>
+                }
+                else if (@ViewBag.year == "الصف الثالث الاعدادي")
+                {
+                    <h1 class="text-primary">كورسات الصف الثالث الاعدادي</h1>
+                }
+                else if (@ViewBag.year == "الصف الثالث الاعدادي")
+                {
+                    <h1 class="text-primary">كورسات الصف الثالث الاعدادي</h1>
+                }
+            </div>
+            <div class="row g-4" id="courses-container">
+                @if (Model.Any())
+                {
+                    @foreach (var item in @Model)
+                    {
+                        <div class="col-lg-4 col-md-6">
+                            <div class="classes-item">
+                                <div class="bg-light rounded-circle w-75 mx-auto p-3">
+                                    <img class="img-fluid rounded-circle" src="~/ImageOfCourse/@item.ImageOfCourse" alt="">
+                                </div>
+                                <div class="bg-light rounded p-4 pt-5 mt-n5">
+                                    <h1 class="d-block text-center h3 mt-3 mb-4">@item.Name</h1>
+                                    <div class="d-flex align-items-center justify-content-between mb-4">
+                                        <div class="ms-3">
+                                            <p>@item.Description</p>
+                                        </div>
+                                    </div>
+                                    <div class="row g-1">
+                                        <div class="col-4">
+                                            <div class="border-top border-3 border-primary pt-2">
+                                                <h6 class="text-primary mb-1">تاريخ الإنشاء</h6>
+                                                <small>@item.CreationDate.ToString("dd/MM/yyyy")</small>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="border-top border-3 border-success pt-2">
+                                                <h6 class="text-success mb-1">آخر تحديث</h6>
+                                                <small>@item.UpdateDate.ToString("dd/MM/yyyy")</small>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="border-top border-3 border-warning pt-2">
+                                                @if (!SignInManager.IsSignedIn(User))
+                                                {
+                                                    <a asp-action="Create" asp-controller="Student" class="btn btn-primary" style="color:yellow;" ><small>اشترك الان!</small></a>
+                                                }
+                                            </div>
+                                            @using System.Security.Claims
+                                            @using ElmanhagPlatform.Data
+                                            @inject AppDbContext _context
+                                            @{
+                                                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                                                var user = _context.ApplicationUsers.Find(userId);
+                                                var record = _context.StudentCourses.Where(c => c.StudentId == userId && c.CourseId == item.Id).FirstOrDefault();
+                                            }
+                                            @if (record != null)
+                                            {
+                                                <a asp-action="GetCourseDetails" asp-controller="Home" asp-route-id="@item.Id" class="btn btn-primary"><small>عرض الكورس</small></a>
+                                            }
+                                            else if (item.Price == 0 && SignInManager.IsSignedIn(User) && User.IsInRole("Student"))
+                                            {
+                                                <a type="button" class="btn btn-primary" style="color:yellow;"
+                                                   data-toggle="modal" data-target="#ModalUser_@item.Id"
+                                                   data-user-money="@user.Money" data-course-price="@item.Price"
+                                                   onclick="checkBalance(this)">
+                                                    <small> مجاني!</small>
+                                                </a>
+                                            }
+                                            else if ((record == null || item.Price != 0) && SignInManager.IsSignedIn(User) && User.IsInRole("Student"))
+                                            {
+                                                <a type="button" class="btn btn-primary" style="color:yellow;"
+                                                        data-toggle="modal" data-target="#ModalUser_@item.Id"
+                                                        data-user-money="@user.Money" data-course-price="@item.Price"
+                                                        onclick="checkBalance(this)">
+                                                    <small>اشترك الان!</small>
+                                                </a>
+                                            }
+                                            else if (!User.IsInRole("Student"))
+                                            {
+                                                <span class="bg-success mb-1" style="color:yellow;">@item.Price جنيهًا</span>
+                                            }
+                                            @*                                             else
+                                            {
+                                                <a asp-action="Create" asp-controller="Student" class="btn btn-primary" style="color:yellow;">
+                                                    <small>اشترك الان!</small>
+                                                </a>
+                                            } *@
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="border-top border-3 border-primary pt-2">
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="border-top border-3 border-success pt-2">
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="border-top border-3 border-warning pt-2">
+                                            </div>
+                                        </div>
+                                        @if (record == null && SignInManager.IsSignedIn(User) && User.IsInRole("Student"))
+                                        {
+                                            <a asp-action="GetCourseDetails" asp-controller="Home" asp-route-id="@item.Id" class="btn btn-primary"><small>عرض الكورس</small></a>
+                                        }
+                                        @if ( User.IsInRole("Student"))
+                                        {
+                                            <span class="bg-success text-white rounded-pill py-2 px-3">
+                                                @if (item.Price == 0)
+                                                {
+                                                    <span>مجاني!</span>
+                                                }
+                                                else
+                                                {
+                                                    @item.Price <span>جنيهًا</span>
+                                                }
+                                            </span>
+                                        }
+                                        @if ( !User.IsInRole("Student"))
+                                        {
+                                            <a asp-action="GetCourseDetails" asp-controller="Home" asp-route-id="@item.Id" class="btn btn-primary"><small>عرض الكورس</small></a>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="no-courses-message">
+                        <p>لا توجد كورسات متاحة في الوقت الحالي.</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <!-- Classes End -->
+
+    @foreach (var item in Model)
+    {
+        <div class="modal fade" id="ModalUser_@item.Id" tabindex="-1" role="dialog" aria-labelledby="ModalTitle_@item.Id" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title" id="ModalTitle_@item.Id">الاشتراك باستخدام المحفظة</h5>
+@*                         <button type="button" class="btn-close text-white" data-bs-dismiss="modal" aria-label="Close"></button> *@
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-layout">
+                            <form id="addTableForm_@item.Id" method="post" asp-action="Pay" asp-controller="Payment" enctype="multipart/form-data">
+                                <div class="alert alert-info text-center">
+                                    @if (item.Price != 0)
+                                    {
+                                        <span>سيتم سحب مبلغ <strong>@item.Price جنيه من محفظتك لإتمام الاشتراك في هذا الكورس.</strong></span>
+                                    }
+                                    else
+                                    {
+                                        <span>الكورس مجاني اشترك الان!</span>
+                                    }
+                                </div>
+                                <input type="hidden" name="id" value="@item.Id" />
+                                <input type="hidden" name="year" value="@ViewBag.year" />
+                                <div class="text-center mt-4">
+                                    <button type="submit" class="btn btn-success btn-lg px-5">
+                                        <i class="fas fa-check-circle"></i> تأكيد الاشتراك
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <!-- Footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <input type="hidden" id="created" data-value="@ViewBag.created" />
+    @section scripts {
+        <link href="~/lib/toaster/toaster.css" rel="stylesheet" />
+        <script src="~/lib/toaster/toaster.js"></script>
+
+        <script type="text/javascript">
+            $(document).ready(function () {
+                var created = $("#created").data("value");
+                if (created == "True") {
+                    toastr.options = {
+                        "closeButton": false,
+                        "debug": false,
+                        "newestOnTop": false,
+                        "progressBar": true,
+                        "positionClass": "toast-top-left",
+                        "preventDuplicates": true,
+                        "onclick": null,
+                        "showDuration": "300",
+                        "hideDuration": "1000",
+                        "timeOut": "12000",
+                        "extendedTimeOut": "1000",
+                        "showEasing": "swing",
+                        "hideEasing": "linear",
+                        "showMethod": "fadeIn",
+                        "hideMethod": "fadeOut"
+                    }
+                    toastr.success("تم الاشتراك في الكورس بنجاح");
+                }
+            });
+        </script>
+        <script>
+            function checkBalance(button) {
+                var userMoney = parseFloat(button.getAttribute('data-user-money'));
+                var coursePrice = parseFloat(button.getAttribute('data-course-price'));
+                if (userMoney < coursePrice) {
+                    alert('المبلغ الذي لديك غير كافٍ للاشتراك. يمكنك التحويل على هذا الرقم: 0' + @admin?.PhoneNumber +
+                        ' ثم أخذ لقطة شاشة للفاتورة وإضافتها إلى محفظتك للتأكيد.');
+                }
+                else {
+                    var targetModal = button.getAttribute('data-target');
+                    $(targetModal).modal('show');
+                }
+            }
+        </script>
+
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    }
+</body>
+
+</html>

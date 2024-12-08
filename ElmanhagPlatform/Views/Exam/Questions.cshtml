@@ -1,0 +1,95 @@
+﻿@model List<ElmanhagPlatform.Models.Question>
+
+@{
+    ViewData["Title"] = "عرض أسئلة الامتحان";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<head>
+    <style>
+        h1 {
+            /* color: #ff9933; */
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .cen{
+            text-align:center;
+        }
+    </style>
+</head>
+
+<div class="br-pagetitle page-margin-top">
+    <div class="row align-items-center justify-content-between">
+        <div class="col">
+            <h1 class="text-primary">@ViewBag.exam.Name</h1>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <table class="table table-bordered table-hover">
+        <thead class="thead-dark">
+            <tr>
+                <th>محتوى السؤال</th>
+                <th>الإجابات</th>
+                <th>الإجابة الصحيحة</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Count > 0)
+            {
+                for (int i = 0; i < Model.Count; i++)
+                {
+                    <tr>
+                        <td>
+                            <strong>السؤال @(i + 1) :</strong> @Model[i].Content
+                        </td>
+                        <td>
+                            <div>
+                                <strong>الإجابة الأولى:</strong> @Model[i].FirstAnswer
+                            </div>
+                            <div>
+                                <strong>الإجابة الثانية:</strong> @Model[i].SecondAnswer
+                            </div>
+                            <div>
+                                <strong>الإجابة الثالثة:</strong> @Model[i].ThirdAnswer
+                            </div>  
+                            <div>
+                                <strong>الإجابة الرابعة:</strong> @Model[i].ForthAnswer
+                            </div>
+                        </td>
+                        <td>
+                            @if (Model[i].CorrectAnswer == "FirstAnswer")
+                            {
+                                <span>الإجابة الأولى</span>
+                            }
+                            else if (Model[i].CorrectAnswer == "SecondAnswer")
+                            {
+                                <span>الإجابة الثانية</span>
+                            }
+                            else if (Model[i].CorrectAnswer == "ThirdAnswer")
+                            {
+                                <span>الإجابة الثالثة</span>
+                            }
+                            else if (Model[i].CorrectAnswer == "ForthAnswer")
+                            {
+                                <span>الإجابة الرابعة</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="3" class="text-center">لا توجد أسئلة للعرض</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<div class="cen">
+    <a asp-controller="Exam" asp-action="Index" asp-route-id="@ViewBag.lectures.Id" class="btn-1 btn-h btn btn-primary">
+        <i class="fas fa-arrow-left"></i> رجوع
+    </a>
+</div>

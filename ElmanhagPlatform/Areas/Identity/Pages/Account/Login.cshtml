@@ -1,0 +1,68 @@
+﻿@page
+@model LoginModel
+
+@{
+    ViewData["Title"] = "تسجيل الدخول";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" type="text/css" href="~/lib/table/datatable/datatables.css">
+    <link rel="stylesheet" type="text/css" href="~/lib/table/datatable/dt-global_style.css">
+    <link href="~/lib/toaster/toaster.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha384-k6RqeWeci5ZR/Lv4MR0sA0FfDOMvdL1eFiFmF5wN3K3jVrGzX+gY98/rFO7tB2kc" crossorigin="anonymous">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
+    <style>
+        .container-xxl {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .form-container {
+            max-width: 400px;
+            width: 100%;
+            margin: auto;
+        }
+
+        .form-floating input, .form-floating button {
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary {
+            border: none;
+            border-radius: 10px;
+        }
+    </style>
+}
+
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="bg-light rounded p-5 form-container">
+            <h1 class="mb-4 text-center">تسجيل الدخول</h1>
+                @if (TempData["AlertMessage"] != null)
+                {
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                @TempData["AlertMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                }
+            <form method="post">
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.PhoneNumber" type="text" class="form-control border-0" id="phoneNumber" placeholder="رقم الهاتف">
+                    <label for="phoneNumber">رقم الهاتف</label>
+                    <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+                </div>
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.Password" type="password" class="form-control border-0" id="password" placeholder="الرقم السري">
+                    <label for="password">الرقم السري</label>
+                    <span asp-validation-for="Input.Password" class="text-danger"></span>
+                </div>
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                <button type="submit" class="w-100 py-3 btn btn-primary">تسجيل الدخول</button>
+            </form>
+        </div>
+    </div>
+</div>

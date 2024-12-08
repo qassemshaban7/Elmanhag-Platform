@@ -1,0 +1,82 @@
+﻿@using ElmanhagPlatform.ViewModels.AnswerVM;
+@model List<ShowResultVM>
+
+@{
+    ViewData["Title"] = "نتائج الامتحان";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5">
+    <div class="br-pagetitle">
+        <h2 class="text-primary mr-3 text-center"> @ViewBag.ExamName </h2>
+    </div>
+
+    <div class="br-pagebody">
+        <div class="br-section-wrapper">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover table-striped">
+                    <thead class="bg-primary text-white">
+                        <tr>
+                            <th scope="col">السؤال</th>
+                            <th scope="col">الإجابة المختارة</th>
+                            <th scope="col">الإجابة الصحيحة</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.QuestionText</td>
+
+                                <td class="@((item.SelectedAnswer == item.CorrectAnswer) ? "text-success" : "text-danger")">
+                                    @if (item.SelectedAnswer == "FirstAnswer")
+                                    {
+                                        @item.FirstAnswer
+                                    }
+                                    else if (item.SelectedAnswer == "SecondAnswer")
+                                    {
+                                        @item.SecondAnswer
+                                    }
+                                    else if (item.SelectedAnswer == "ThirdAnswer")
+                                    {
+                                        @item.ThirdAnswer
+                                    }
+                                    else if (item.SelectedAnswer == "ForthAnswer")
+                                    {
+                                        @item.ForthAnswer
+                                    }
+
+                                </td>
+                                <td>
+                                    @if (item.CorrectAnswer == "FirstAnswer")
+                                    {
+                                        @item.FirstAnswer
+                                    }
+                                    else if (item.CorrectAnswer == "SecondAnswer")
+                                    {
+                                        @item.SecondAnswer
+                                    }
+                                    else if (item.CorrectAnswer == "ThirdAnswer")
+                                    {
+                                        @item.ThirdAnswer
+                                    }
+                                    else if (item.CorrectAnswer == "ForthAnswer")
+                                    {
+                                        @item.ForthAnswer
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                <div class="text-center mt-3">
+                    <a asp-action="GetCourseDetails" asp-controller="Home" asp-route-id="@ViewBag.CourseId" class="btn btn-primary">رجوع</a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>

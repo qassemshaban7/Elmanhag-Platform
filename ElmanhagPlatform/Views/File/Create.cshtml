@@ -1,0 +1,125 @@
+﻿@using ElmanhagPlatform.ViewModels.Video;
+@model AddVideoVM
+
+@{
+    ViewData["Title"] = "Login Page";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <style>
+        .form-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .form-group {
+            flex: 1 1 45%;
+            min-width: 225px;
+        }
+
+        media (max-width: 768px) {
+            .form-container{
+                flex-direction: column;
+            }
+        }
+
+        .hire-info {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: auto;
+            padding: 20px;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        .container {
+            margin: 0 auto;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .hire-info form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            /* color: #ff9933; */
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .btn-h {
+            /* background-color: #ff9933; */
+            color: #333;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+
+            .btn-h:hover {
+                /* background-color: #ff9933; */
+            }
+    </style>
+</head>
+
+@section Styles {
+    <link rel="stylesheet" type="text/css" href="~/lib/table/datatable/datatables.css">
+    <link rel="stylesheet" type="text/css" href="~/lib/table/datatable/dt-global_style.css">
+    <link href="~/lib/toaster/toaster.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha384-k6RqeWeci5ZR/Lv4MR0sA0FfDOMvdL1eFiFmF5wN3K3jVrGzX+gY98/rFO7tB2kc" crossorigin="anonymous">
+}
+<body>
+    <div id="contact" class="hire">
+        <div class="container">
+            <div class="hire-details">
+                <h1 class="text-primary">اضافة ملف للمحاضرة  @ViewBag.Lectures.Name</h1>
+                <div class="hire-info">
+                    <form id="account" method="post" asp-action="Create" asp-controller="File" enctype="multipart/form-data" asp-route-returnurl="@ViewData["ReturnUrl"]">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="form-container">
+                            <div class="form-group">
+                                <input asp-for="Name" autocomplete="on" aria-required="true" required type="text" class="form-control" placeholder="اسم الملف" onfocus="this.placeholder = ''" onblur="this.placeholder ='اسم الملف'">
+                                <span asp-validation-for="Name" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label>الملف<span class="tx-danger"></span></label>
+                                <input asp-for="VideoPath" type="file" class="form-control-file" accept=".pdf" aria-required="true" required placeholder="الملف" onfocus="this.placeholder = ''" onblur="this.placeholder ='الملف'">
+                                <span asp-validation-for="VideoPath" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <textarea asp-for="Description" autocomplete="on" aria-required="true" required type="text" class="form-control" placeholder="وصف الملف" onfocus="this.placeholder = ''" onblur="this.placeholder ='وصف الملف'"></textarea>
+                                <span asp-validation-for="Description" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
+                        <div class="form-layout-footer mg-t-30 text-center">
+                            <button id="login-submit" type="submit" class="btn-1 btn-h btn btn-primary"><i class="fas fa-plus"></i> اضافة</button>
+                            <a asp-controller="File" asp-action="Index" asp-route-id="@ViewBag.lectures.Id" class="btn-1 btn-h btn btn-primary">
+                                <i class="fas fa-arrow-left"></i> رجوع
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
